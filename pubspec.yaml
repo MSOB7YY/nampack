@@ -1,6 +1,6 @@
 name: nampack
 description: "Simple reactive library with useful extensions"
-version: 0.9.5
+version: 0.9.7
 homepage:
 publish_to: none
 

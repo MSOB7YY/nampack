@@ -5,7 +5,7 @@ import 'package:nampack/reactive/class/rx_base.dart';
 /// Listens to a reactive class and callback builder with the main listenable.
 class ObxOClass<C extends RxBaseCore<T>, T> extends StatelessWidget {
   final C rx;
-  final Widget Function(C object) builder;
+  final Widget Function(BuildContext context, C object) builder;
 
   const ObxOClass({super.key, required this.rx, required this.builder});
 
@@ -13,15 +13,15 @@ class ObxOClass<C extends RxBaseCore<T>, T> extends StatelessWidget {
   StatelessElement createElement() => _RxOListenerBuilder(rx, this);
 
   @override
-  Widget build(BuildContext context) => builder(rx);
+  Widget build(BuildContext context) => builder(context, rx);
 }
 
 /// Listens to a reactive class and callback builder with the value inside.
-class ObxO<T> extends StatelessWidget {
+class ObxORaw<T> extends StatelessWidget {
   final RxBaseCore<T> rx;
   final Widget Function(T value) builder;
 
-  const ObxO({super.key, required this.rx, required this.builder});
+  const ObxORaw({super.key, required this.rx, required this.builder});
 
   @override
   StatelessElement createElement() => _RxOListenerBuilder(rx, this);
@@ -30,22 +30,22 @@ class ObxO<T> extends StatelessWidget {
   Widget build(BuildContext context) => builder(rx.value);
 }
 
-/// Same as [ObxO] with additional context parameter in the callback.
+/// Same as [ObxORaw] with additional context parameter in the callback.
 ///
 /// equivalent to:
 /// ```dart
 /// Builder(
-///   builder: (context) => ObxO(
+///   builder: (context) => ObxORaw(
 ///     rx: rx,
 ///     builder: (value) => child,
 ///   ),
 /// );
 /// ```
-class ObxOContext<T> extends StatelessWidget {
+class ObxO<T> extends StatelessWidget {
   final RxBaseCore<T> rx;
   final Widget Function(BuildContext context, T value) builder;
 
-  const ObxOContext({super.key, required this.rx, required this.builder});
+  const ObxO({super.key, required this.rx, required this.builder});
 
   @override
   StatelessElement createElement() => _RxOListenerBuilder(rx, this);

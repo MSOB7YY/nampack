@@ -4,19 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:nampack/nampack.dart';
 
 class Obx extends StatelessWidget {
-  final Widget Function() builder;
-  const Obx(this.builder, {super.key});
-
-  @override
-  StatelessElement createElement() => _RxObserver(this);
-
-  @override
-  Widget build(BuildContext context) => builder();
-}
-
-class ObxContext extends StatelessWidget {
   final Widget Function(BuildContext context) builder;
-  const ObxContext(this.builder, {super.key});
+  const Obx(this.builder, {super.key});
 
   @override
   StatelessElement createElement() => _RxObserver(this);
