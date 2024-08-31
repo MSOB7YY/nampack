@@ -366,17 +366,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
           route.alignment,
           animation,
           secondaryAnimation,
-          NamBackGestureDetector<T>(
-            popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-            onStartPopGesture: () {
-              assert(_isPopGestureEnabled(route, canSwipe, context));
-              return _startPopGesture(route);
-            },
-            limitedSwipe: limitedSwipe,
-            gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-            initialOffset: initialOffset,
-            child: child,
-          ),
+          !canSwipe
+              ? child
+              : NamBackGestureDetector<T>(
+                  popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                  onStartPopGesture: () {
+                    assert(_isPopGestureEnabled(route, canSwipe, context));
+                    return _startPopGesture(route);
+                  },
+                  limitedSwipe: limitedSwipe,
+                  gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                  initialOffset: initialOffset,
+                  child: child,
+                ),
         );
       }
 
@@ -392,17 +394,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               route.alignment,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.downToUp:
           return SlideDownTransition().buildTransitions(
@@ -411,17 +415,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               route.alignment,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.upToDown:
           return SlideTopTransition().buildTransitions(
@@ -430,30 +436,34 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               route.alignment,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.noTransition:
-          return NamBackGestureDetector<T>(
-            popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-            onStartPopGesture: () {
-              assert(_isPopGestureEnabled(route, canSwipe, context));
-              return _startPopGesture(route);
-            },
-            limitedSwipe: limitedSwipe,
-            gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-            initialOffset: initialOffset,
-            child: child,
-          );
+          return !canSwipe
+              ? child
+              : NamBackGestureDetector<T>(
+                  popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                  onStartPopGesture: () {
+                    assert(_isPopGestureEnabled(route, canSwipe, context));
+                    return _startPopGesture(route);
+                  },
+                  limitedSwipe: limitedSwipe,
+                  gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                  initialOffset: initialOffset,
+                  child: child,
+                );
 
         case Transition.rightToLeft:
           return SlideRightTransition().buildTransitions(
@@ -462,17 +472,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               route.alignment,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.zoom:
           return ZoomInTransition().buildTransitions(
@@ -481,17 +493,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               route.alignment,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.fadeIn:
           return FadeInTransition().buildTransitions(
@@ -500,17 +514,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               route.alignment,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.rightToLeftWithFade:
           return RightToLeftFadeTransition().buildTransitions(
@@ -519,17 +535,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               route.alignment,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.leftToRightWithFade:
           return LeftToRightFadeTransition().buildTransitions(
@@ -538,34 +556,38 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               route.alignment,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.cupertino:
           return CupertinoPageTransition(
               primaryRouteAnimation: animation,
               secondaryRouteAnimation: secondaryAnimation,
               linearTransition: linearTransition,
-              child: NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              child: !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.size:
           return SizeTransitions().buildTransitions(
@@ -574,17 +596,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               route.alignment,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.fade:
           return const FadeUpwardsPageTransitionsBuilder().buildTransitions(
@@ -592,17 +616,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               context,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.topLevel:
           return const ZoomPageTransitionsBuilder().buildTransitions(
@@ -610,17 +636,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               context,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.native:
           return const PageTransitionsTheme().buildTransitions(
@@ -628,17 +656,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               context,
               iosAnimation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         case Transition.circularReveal:
           return CircularRevealTransition().buildTransitions(
@@ -647,17 +677,19 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               route.alignment,
               animation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(_isPopGestureEnabled(route, canSwipe, context));
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(_isPopGestureEnabled(route, canSwipe, context));
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
 
         default:
           PageTransitionsTheme pageTransitionsTheme = Theme.of(context).pageTransitionsTheme;
@@ -667,19 +699,21 @@ Cannot read the previousTitle for a route that has not yet been installed''',
               context,
               iosAnimation,
               secondaryAnimation,
-              NamBackGestureDetector<T>(
-                popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
-                onStartPopGesture: () {
-                  assert(
-                    _isPopGestureEnabled(route, canSwipe, context),
-                  );
-                  return _startPopGesture(route);
-                },
-                limitedSwipe: limitedSwipe,
-                gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
-                initialOffset: initialOffset,
-                child: child,
-              ));
+              !canSwipe
+                  ? child
+                  : NamBackGestureDetector<T>(
+                      popGestureEnable: () => _isPopGestureEnabled(route, canSwipe, context),
+                      onStartPopGesture: () {
+                        assert(
+                          _isPopGestureEnabled(route, canSwipe, context),
+                        );
+                        return _startPopGesture(route);
+                      },
+                      limitedSwipe: limitedSwipe,
+                      gestureWidth: route.gestureWidth?.call(context) ?? _kBackGestureWidth,
+                      initialOffset: initialOffset,
+                      child: child,
+                    ));
       }
     }
   }
