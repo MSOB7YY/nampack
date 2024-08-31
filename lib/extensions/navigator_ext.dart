@@ -11,6 +11,7 @@ extension NavigatorUtils on NavigatorState {
     Curve curve = Curves.easeOut,
     bool opaque = true,
     bool fullscreenDialog = false,
+    bool popGesture = false,
     required bool maintainState,
   }) async {
     return push(
@@ -23,6 +24,7 @@ extension NavigatorUtils on NavigatorState {
         opaque: opaque,
         fullscreenDialog: fullscreenDialog,
         maintainState: maintainState,
+        popGesture: popGesture,
       ),
     );
   }
@@ -34,6 +36,7 @@ extension NavigatorUtils on NavigatorState {
     Curve curve = Curves.easeOut,
     bool opaque = true,
     bool fullscreenDialog = false,
+    bool popGesture = false,
     required bool maintainState,
   }) async {
     return pushReplacement(
@@ -46,6 +49,7 @@ extension NavigatorUtils on NavigatorState {
         curve: curve,
         opaque: opaque,
         fullscreenDialog: fullscreenDialog,
+        popGesture: popGesture,
       ),
     );
   }

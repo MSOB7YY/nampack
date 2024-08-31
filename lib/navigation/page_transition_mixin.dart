@@ -702,6 +702,9 @@ Cannot read the previousTitle for a route that has not yet been installed''',
   }
 
   static bool _isPopGestureEnabled<T>(PageRoute<T> route, bool canSwipe, BuildContext context) {
+    // Don't perfome swipe if canSwipe be false
+    if (!canSwipe) return false;
+
     // If there's nothing to go back to, then obviously we don't support
     // the back gesture.
     if (route.isFirst) return false;
@@ -725,9 +728,6 @@ Cannot read the previousTitle for a route that has not yet been installed''',
     if (NamPageRouteTransitionMixin.isPopGestureInProgress(context)) {
       return false;
     }
-
-    // Don't perfome swipe if canSwipe be false
-    if (!canSwipe) return false;
 
     // Looks like a back gesture would be welcome!
     return true;
