@@ -135,9 +135,6 @@ extension RxListExtensions<E, Id> on RxListBase<E> {
     refresh();
   }
 
-  E? getEnum(String? string) => _value.getEnum(string);
-  E? getEnumLoose(String? string) => _value.getEnumLoose(string);
-
   void insertSafe(int index, E object) {
     _value.insertSafe(index, object);
     refresh();
