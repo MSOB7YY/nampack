@@ -13,10 +13,10 @@ class RxUpdaters {
     final int length = _updaters.length;
     if (length == 0) return;
 
-    if (length == 1) {
-      _updaters[0]();
-    } else {
-      for (int i = 0; i < length; i++) {
+    _updaters[0]();
+
+    if (length > 1) {
+      for (int i = 1; i < length; i++) {
         _updaters[i]();
       }
     }
