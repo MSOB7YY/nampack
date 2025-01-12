@@ -121,7 +121,14 @@ class SnackbarController {
       resizeDuration: null,
       key: const Key('dismissible'),
       onDismissed: (_) => _close(withAnimations: false, dismissedBySwipe: true),
-      child: child,
+      child: Dismissible(
+        direction: DismissDirection.horizontal,
+        movementDuration: Duration.zero,
+        resizeDuration: null,
+        key: const Key('dismissible_horizontal'),
+        onDismissed: (_) => _close(withAnimations: false, dismissedBySwipe: true),
+        child: child,
+      ),
     );
   }
 
