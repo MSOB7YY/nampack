@@ -16,7 +16,8 @@ extension ContextUtils on BuildContext {
 
   ThemeData get theme => Theme.of(this);
   TextTheme get textTheme => theme.textTheme;
-  bool get isDarkMode => theme.brightness == Brightness.dark;
+  Brightness get brightness => Theme.brightnessOf(this);
+  bool get isDarkMode => brightness == Brightness.dark;
 
   bool get isLandscape => orientation == Orientation.landscape;
   bool get isPortrait => orientation == Orientation.portrait;

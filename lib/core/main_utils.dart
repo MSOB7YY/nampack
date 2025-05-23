@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+
 import 'package:nampack/extensions/build_context_ext.dart';
 import 'package:nampack/snackbar/snackbars_manager.dart';
 
@@ -16,7 +17,8 @@ class _NamPackUtils {
 
   ThemeData get theme => context == null ? ThemeData.fallback() : context!.theme;
   TextTheme get textTheme => theme.textTheme;
-  bool get isDarkMode => theme.brightness == Brightness.dark;
+  Brightness get brightness => context == null ? Brightness.light : Theme.brightnessOf(context!);
+  bool get isDarkMode => brightness == Brightness.dark;
 
   EdgeInsets? get padding => context == null ? null : MediaQuery.paddingOf(context!);
   EdgeInsets? get viewPadding => context == null ? null : MediaQuery.viewPaddingOf(context!);
