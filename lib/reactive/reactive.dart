@@ -1,6 +1,7 @@
 export 'class/rx_base.dart';
 export 'class/rx.dart';
 export 'class/rxn.dart';
+export 'class/rxn_fallback.dart';
 export 'extensions.dart';
 export 'rx_core.dart';
 export 'widget/obx.dart';
