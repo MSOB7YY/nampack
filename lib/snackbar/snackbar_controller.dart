@@ -55,9 +55,18 @@ class SnackbarController {
 
   void _cancelTimer() => _closeTimer?.cancel();
 
+  DateTime? _closeAt;
+
   void _initTimer() {
     _cancelTimer();
+    _closeAt = DateTime.now().add(snackbar.duration);
     _closeTimer = Timer(snackbar.duration, close);
+  }
+
+  void addDuration(Duration extraDuration) {
+    _cancelTimer();
+    _closeAt = (_closeAt ?? DateTime.now()).add(extraDuration);
+    _closeTimer = Timer(_closeAt!.difference(DateTime.now()), close);
   }
 
   Animation<Alignment> _createAnimation(bool top) {
