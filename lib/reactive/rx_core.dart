@@ -14,7 +14,7 @@ class NotifyData {
   });
 }
 
-class RxNotifier {
+class RxAutoManager {
   static NotifyData? _updaterData;
   static void pullObservers<T>(RxUpdaters updaters) {
     final updaterData = _updaterData;

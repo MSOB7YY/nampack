@@ -4,7 +4,7 @@ import 'package:nampack/reactive/class/rx_updaters.dart';
 mixin RxUpdatersMixin<T> on RxOUpdatersMixin<T> {
   @override
   T get valueR {
-    RxNotifier.pullObservers(_updaters!);
+    RxAutoManager.pullObservers(_updaters!);
     return super.value;
   }
 }

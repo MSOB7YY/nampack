@@ -26,7 +26,7 @@ class _RxObserver extends StatelessElement {
   }
 
   @override
-  Widget build() => RxNotifier.append(NotifyData(disposers: disposers!, updater: _updateWidget), super.build);
+  Widget build() => RxAutoManager.append(NotifyData(disposers: disposers!, updater: _updateWidget), super.build);
 
   @override
   void unmount() {
