@@ -1,4 +1,4 @@
-import 'package:nampack/reactive/class/rx_Throttler.dart';
+import 'package:nampack/reactive/class/rx_throttler.dart';
 import 'package:nampack/reactive/class/rx_base.dart';
 import 'package:nampack/reactive/class/rx_updater_mixin.dart';
 
