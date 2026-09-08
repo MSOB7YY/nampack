@@ -83,6 +83,61 @@ class ObxOF<T> extends StatelessWidget {
   Widget build(BuildContext context) => builder(context, rx.value, rx.fallback);
 }
 
+/// Listens to [rx] but rebuilds only when [selector] yields a different value.
+class ObxOSelect<T, S> extends StatelessWidget {
+  final RxBaseCore<T> rx;
+  final S Function(T value) selector;
+  final Widget Function(BuildContext context, S selected) builder;
+
+  const ObxOSelect({super.key, required this.rx, required this.selector, required this.builder});
+
+  @override
+  StatelessElement createElement() => _RxOSelectListenerBuilder<T, S>(rx, this);
+
+  @override
+  Widget build(BuildContext context) => builder(context, selector(rx.value));
+}
+
+class _RxOSelectListenerBuilder<T, S> extends StatelessElement {
+  final RxBaseCore<T> rx;
+  late S _selected;
+
+  _RxOSelectListenerBuilder(this.rx, ObxOSelect<T, S> super.widget);
+
+  @override
+  ObxOSelect<T, S> get widget => super.widget as ObxOSelect<T, S>;
+
+  @override
+  Widget build() => widget.builder(this, _selected);
+
+  void _updateWidget() {
+    if (!mounted) return;
+    final newSelected = widget.selector(rx.value);
+    if (newSelected == _selected) return;
+    _selected = newSelected;
+    markNeedsBuild();
+  }
+
+  @override
+  void mount(Element? parent, Object? newSlot) {
+    _selected = widget.selector(rx.value);
+    rx.addListener(_updateWidget);
+    super.mount(parent, newSlot);
+  }
+
+  @override
+  void update(ObxOSelect<T, S> newWidget) {
+    _selected = newWidget.selector(rx.value);
+    super.update(newWidget);
+  }
+
+  @override
+  void unmount() {
+    super.unmount();
+    rx.removeListener(_updateWidget);
+  }
+}
+
 class _RxOListenerBuilder<T> extends StatelessElement {
   final RxBaseCore<T> rx;
   _RxOListenerBuilder(this.rx, super.widget);
