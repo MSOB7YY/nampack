@@ -10,6 +10,10 @@ final nampack = _NamPackUtils();
 class _NamPackUtils {
   final rootNavigatorKey = GlobalKey<NavigatorState>();
 
+  /// Applied on top of the view's device pixel ratio, for apps that scale their
+  /// whole ui down/up at the root.
+  double viewScale = 1.0;
+
   void closeAllSnackbars() => SnackbarManager.closeAll();
 
   BuildContext? get context => rootNavigatorKey.currentContext;
@@ -28,12 +32,12 @@ class _NamPackUtils {
   ui.FlutterView? get platformView => platform.implicitView;
 
   Locale? get deviceLocale => platform.locale;
-  double get pixelRatio => platformView!.devicePixelRatio;
+  double get pixelRatio => platformView!.devicePixelRatio * viewScale;
   Size get size => platformView!.physicalSize / pixelRatio;
   double get width => size.width;
   double get height => size.height;
-  double get statusBarHeight => platformView!.padding.top;
-  double get bottomBarHeight => platformView!.padding.bottom;
+  double get statusBarHeight => platformView!.padding.top / pixelRatio;
+  double get bottomBarHeight => platformView!.padding.bottom / pixelRatio;
 
   /// Android Q+
   bool get isPlatformDarkMode => (platform.platformBrightness == Brightness.dark);
