@@ -9,7 +9,7 @@ abstract class RxMapBase<K, V> extends RxBase<Map<K, V>> with RxExecuterMixin<Ma
 
   Map<K, V> get _value => super.value;
 
-  V? operator [](Object? key) => valueR[key];
+  V? operator [](K key) => valueR[key];
 
   void operator []=(K key, V value) {
     _value[key] = value;

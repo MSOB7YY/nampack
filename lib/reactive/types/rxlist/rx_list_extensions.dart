@@ -32,7 +32,7 @@ extension RxListExtensionsBase<E, Id> on RxListBase<E> {
     refresh();
   }
 
-  bool remove(Object? element) {
+  bool remove(E element) {
     final removed = _value.remove(element);
     refresh();
     return removed;
@@ -64,7 +64,7 @@ extension RxListExtensionsBase<E, Id> on RxListBase<E> {
 
   Iterable<T> whereType<T>() => valueR.whereType<T>();
 
-  bool contains(Object? element) => valueR.contains(element);
+  bool contains(E element) => valueR.contains(element);
 
   void sort([int Function(E a, E b)? compare]) {
     _value.sort(compare);

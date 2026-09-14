@@ -18,7 +18,7 @@ extension RxMapExtensionsBase<K, V> on RxMapBase<K, V> {
     refresh();
   }
 
-  V? remove(Object? key) {
+  V? remove(K key) {
     final removed = _value.remove(key);
     refresh();
     return removed;
@@ -31,9 +31,9 @@ extension RxMapExtensionsBase<K, V> on RxMapBase<K, V> {
 
   Map<RK, RV> cast<RK, RV>() => _value.cast<RK, RV>();
 
-  bool containsKey(Object? key) => _value.containsKey(key);
+  bool containsKey(K key) => _value.containsKey(key);
 
-  bool containsValue(Object? value) => _value.containsValue(value);
+  bool containsValue(V value) => _value.containsValue(value);
 
   Map<K2, V2> map<K2, V2>(MapEntry<K2, V2> Function(K key, V value) convert) => _value.map(convert);
 
