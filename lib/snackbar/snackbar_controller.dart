@@ -7,6 +7,7 @@ import 'package:nampack/core/main_utils.dart';
 import 'package:nampack/snackbar/snackbars_manager.dart';
 
 import 'snackbar_enum.dart';
+import 'snackbar_scope.dart';
 import 'snackbar_widget.dart';
 
 class SnackbarController {
@@ -16,9 +17,13 @@ class SnackbarController {
   final _transitionCompleter = Completer();
   Future<void> get future => _transitionCompleter.future;
 
-  Timer? _closeTimer;
-
   late final AnimationController _controller;
+
+  late final AnimationController _countdownController;
+
+  Animation<double> get remainingTimeFraction => _countdownController;
+
+  AnimationController? _dismissHintController;
 
   OverlayEntry? _overlayEntry;
 
@@ -45,28 +50,35 @@ class SnackbarController {
     final animation = _createAnimation(snackbar.top);
     animation.addStatusListener(_handleStatusChanged);
 
+    _countdownController = _createCountdownController();
+    if (snackbar.isDismissible && snackbar.dismissHint) _dismissHintController = _createDismissHintController();
+
     _overlayEntry = _createOverlayEntry(snackbar, animation);
     _overlayState.insert(_overlayEntry!);
 
     _controller.forward();
-    _initTimer();
+    _restartCountdown(snackbar.duration);
     SnackbarManager.add(close);
   }
 
-  void _cancelTimer() => _closeTimer?.cancel();
+  void _pauseCountdown() => _countdownController.stop();
 
-  DateTime? _closeAt;
-
-  void _initTimer() {
-    _cancelTimer();
-    _closeAt = DateTime.now().add(snackbar.duration);
-    _closeTimer = Timer(snackbar.duration, close);
+  void _restartCountdown(Duration duration) {
+    if (_transitionCompleter.isCompleted) return;
+    _countdownController.duration = duration;
+    _countdownController.reverse(from: 1.0);
   }
 
+  void restartDuration() => _restartCountdown(snackbar.duration);
+
   void addDuration(Duration extraDuration) {
-    _cancelTimer();
-    _closeAt = (_closeAt ?? DateTime.now()).add(extraDuration);
-    _closeTimer = Timer(_closeAt!.difference(DateTime.now()), close);
+    final totalDuration = _countdownController.duration!;
+    final remainingDuration = totalDuration * _countdownController.value;
+    _restartCountdown(remainingDuration + extraDuration);
+  }
+
+  void _handleCountdownStatusChanged(AnimationStatus status) {
+    if (status == AnimationStatus.dismissed) close();
   }
 
   Animation<Alignment> _createAnimation(bool top) {
@@ -99,7 +111,39 @@ class SnackbarController {
     );
   }
 
+  AnimationController _createCountdownController() {
+    final countdownController = AnimationController(
+      value: 1.0,
+      debugLabel: '$runtimeType.countdown',
+      vsync: _overlayState,
+    );
+    countdownController.addStatusListener(_handleCountdownStatusChanged);
+    return countdownController;
+  }
+
+  AnimationController _createDismissHintController() {
+    return AnimationController(
+      duration: NamSnackBar.kDismissHintDuration,
+      debugLabel: '$runtimeType.dismissHint',
+      vsync: _overlayState,
+    );
+  }
+
   OverlayEntry _createOverlayEntry(Widget child, Animation<Alignment> animation) {
+    final scopedChild = SnackbarScope(
+      controller: this,
+      child: child,
+    );
+    final snack = snackbar.isDismissible ? _getDismissibleSnack(scopedChild) : scopedChild;
+    final dismissHintController = _dismissHintController;
+    final dismissHintAnimation = dismissHintController == null ? null : _dismissHintTween.animate(dismissHintController);
+    final snackWithHint = dismissHintAnimation == null
+        ? snack
+        : _SnackbarDismissHint(
+            animation: dismissHintAnimation,
+            top: snackbar.top,
+            child: snack,
+          );
     return OverlayEntry(
       builder: (context) => Semantics(
         focused: false,
@@ -109,10 +153,10 @@ class SnackbarController {
           alignment: animation,
           child: Builder(
             builder: (_) => Listener(
-              onPointerDown: (_) => _cancelTimer(),
-              onPointerUp: (_) => _initTimer(),
-              onPointerCancel: (_) => _initTimer(),
-              child: snackbar.isDismissible ? _getDismissibleSnack(child) : child,
+              onPointerDown: (_) => _pauseCountdown(),
+              onPointerUp: (_) => _restartCountdown(snackbar.duration),
+              onPointerCancel: (_) => _restartCountdown(snackbar.duration),
+              child: snackWithHint,
             ),
           ),
         ),
@@ -121,6 +165,16 @@ class SnackbarController {
       opaque: false,
     );
   }
+
+  static final _dismissHintPushCurve = CurveTween(curve: Curves.easeOutCubic);
+  static final _dismissHintReturnCurve = CurveTween(curve: Curves.easeOutBack);
+  static final _dismissHintPushTween = Tween(begin: 0.0, end: 1.0).chain(_dismissHintPushCurve);
+  static final _dismissHintReturnTween = Tween(begin: 1.0, end: 0.0).chain(_dismissHintReturnCurve);
+  static final _dismissHintTween = TweenSequence<double>([
+    TweenSequenceItem(tween: ConstantTween(0.0), weight: 15.0),
+    TweenSequenceItem(tween: _dismissHintPushTween, weight: 35.0),
+    TweenSequenceItem(tween: _dismissHintReturnTween, weight: 50.0),
+  ]);
 
   Widget _getDismissibleSnack(Widget child) {
     final direction = snackbar.top ? DismissDirection.up : DismissDirection.down;
@@ -148,6 +202,7 @@ class SnackbarController {
       case AnimationStatus.completed:
         currentStatus = SnackbarStatus.open;
         _overlayEntry?.opaque = false;
+        _dismissHintController?.forward();
         break;
 
       case AnimationStatus.forward:
@@ -177,10 +232,9 @@ class SnackbarController {
     if (_transitionCompleter.isCompleted) return;
     _transitionCompleter.complete();
     SnackbarManager.remove(close);
+    _pauseCountdown();
 
     if (withAnimations) {
-      _closeTimer?.cancel();
-
       if (dismissedBySwipe) {
         await Future.delayed(const Duration(milliseconds: 200), _controller.reset);
       } else {
@@ -192,5 +246,32 @@ class SnackbarController {
     SchedulerBinding.instance.addPostFrameCallback((_) => _overlayEntry?.dispose());
     _overlayEntry = null;
     _controller.dispose();
+    _countdownController.dispose();
+    _dismissHintController?.dispose();
+  }
+}
+
+// by claude
+class _SnackbarDismissHint extends AnimatedWidget {
+  final Animation<double> animation;
+  final bool top;
+  final Widget child;
+
+  const _SnackbarDismissHint({
+    required this.animation,
+    required this.top,
+    required this.child,
+  }) : super(listenable: animation);
+
+  static const _kDistance = 10.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final distance = animation.value * _kDistance;
+    final dy = top ? -distance : distance;
+    return Transform.translate(
+      offset: Offset(0.0, dy),
+      child: child,
+    );
   }
 }

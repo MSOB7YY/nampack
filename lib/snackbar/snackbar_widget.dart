@@ -12,8 +12,11 @@ class NamSnackBar extends StatelessWidget {
   final Curve forwardAnimationCurve;
   final Curve reverseAnimationCurve;
   final bool isDismissible;
+  final bool dismissHint;
   final void Function(SnackbarStatus status)? onStatusChanged;
   final Widget child;
+
+  static const kDismissHintDuration = Duration(milliseconds: 700);
 
   const NamSnackBar({
     super.key,
@@ -26,6 +29,7 @@ class NamSnackBar extends StatelessWidget {
     this.forwardAnimationCurve = Curves.linear,
     this.reverseAnimationCurve = Curves.linear,
     this.isDismissible = true,
+    this.dismissHint = false,
     this.onStatusChanged,
     required this.child,
   });
