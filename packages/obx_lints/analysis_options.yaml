@@ -1,11 +1,1 @@
 include: package:lints/recommended.yaml
-
-analyzer:
-  plugins:
-    - custom_lint
-
-custom_lint:
-  rules:
-    - avoid_rx_value_getter_outside_obx
-    - non_reactive_value_inside_obx
-    - prefer_rx_toggle

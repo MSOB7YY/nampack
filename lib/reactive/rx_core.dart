@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:nampack/nampack.dart';
 import 'package:nampack/reactive/class/rx_updaters.dart';
@@ -28,22 +27,7 @@ class RxAutoManager {
   static T append<T>(NotifyData updaterData, T Function() builder) {
     _updaterData = updaterData;
     final result = builder();
-    assert(_checkImroper(updaterData));
     _updaterData = null;
     return result;
   }
-
-  static bool _checkImroper(NotifyData updaterData) {
-    if (updaterData.disposers.isEmpty) {
-      throw const ObxError();
-    }
-    return true;
-  }
-}
-
-class ObxError implements Exception {
-  const ObxError();
-
-  @override
-  String toString() => "you forgot to use reactive variable under this widget.";
 }

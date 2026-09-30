@@ -17,6 +17,9 @@ class Obx extends StatelessWidget {
 class _RxObserver extends StatelessElement {
   _RxObserver(super.widget);
 
+  /// local builds only: `--dart-define=NAMPACK_HIGHLIGHT_NON_REACTIVE_OBX=true`
+  static const _shouldHighlightNonReactive = bool.fromEnvironment('NAMPACK_HIGHLIGHT_NON_REACTIVE_OBX');
+
   List<VoidCallback>? disposers = [];
 
   void _updateWidget() {
@@ -26,7 +29,17 @@ class _RxObserver extends StatelessElement {
   }
 
   @override
-  Widget build() => RxAutoManager.append(NotifyData(disposers: disposers!, updater: _updateWidget), super.build);
+  Widget build() {
+    final disposers = this.disposers!;
+    final notifyData = NotifyData(disposers: disposers, updater: _updateWidget);
+    final child = RxAutoManager.append(notifyData, super.build);
+    if (_shouldHighlightNonReactive && disposers.isEmpty) {
+      return _NonReactiveHighlight(
+        child: child,
+      );
+    }
+    return child;
+  }
 
   @override
   void unmount() {
@@ -39,5 +52,35 @@ class _RxObserver extends StatelessElement {
       disposers.clear();
       this.disposers = null;
     }
+  }
+}
+
+class _NonReactiveHighlight extends StatelessWidget {
+  final Widget child;
+
+  const _NonReactiveHighlight({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.passthrough,
+      alignment: Alignment.center,
+      children: [
+        child,
+        const Positioned.fill(
+          child: IgnorePointer(
+            child: ColoredBox(
+              color: Color(0x33F44336),
+              child: Align(
+                child: Text(
+                  '!! NON-REACTIVE !!',
+                  textDirection: TextDirection.ltr,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

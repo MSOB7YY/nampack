@@ -19,7 +19,5 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-  obx_lints:
-    path: ./packages/obx_lints
 
 flutter:
