@@ -23,6 +23,17 @@ class SnackbarController {
 
   Animation<double> get remainingTimeFraction => _countdownController;
 
+  static const _kCountdownRefillDuration = Duration(milliseconds: 800);
+
+  AppLifecycleListener? _lifecycleListener;
+
+  bool _isHovered = false;
+  bool _isPressed = false;
+  bool _isAppInactive = false;
+  bool _isCovered = false;
+
+  bool get _isCountdownPaused => _isHovered || _isPressed || _isAppInactive || _isCovered;
+
   AnimationController? _dismissHintController;
 
   OverlayEntry? _overlayEntry;
@@ -53,6 +64,10 @@ class SnackbarController {
     _countdownController = _createCountdownController();
     if (snackbar.isDismissible && snackbar.dismissHint) _dismissHintController = _createDismissHintController();
 
+    final lifecycleState = WidgetsBinding.instance.lifecycleState;
+    _isAppInactive = lifecycleState != null && lifecycleState != AppLifecycleState.resumed;
+    _lifecycleListener = AppLifecycleListener(onStateChange: _onLifecycleStateChanged);
+
     _overlayEntry = _createOverlayEntry(snackbar, animation);
     _overlayState.insert(_overlayEntry!);
 
@@ -61,24 +76,61 @@ class SnackbarController {
     SnackbarManager.add(close);
   }
 
-  void _pauseCountdown() => _countdownController.stop();
+  void _onLifecycleStateChanged(AppLifecycleState state) {
+    _isAppInactive = state != AppLifecycleState.resumed;
+    _onCountdownPauseChanged();
+  }
+
+  void _onHoverChanged(bool isHovered) {
+    _isHovered = isHovered;
+    _onCountdownPauseChanged();
+  }
+
+  void _onPressChanged(bool isPressed) {
+    _isPressed = isPressed;
+    _onCountdownPauseChanged();
+  }
+
+  /// holds the countdown while covered, restarts it fully once uncovered.
+  void setCovered(bool isCovered) {
+    if (_isCovered == isCovered) return;
+    _isCovered = isCovered;
+    _onCountdownPauseChanged();
+  }
+
+  void _onCountdownPauseChanged() {
+    final isShown = _overlayEntry != null;
+    if (!isShown) return;
+    if (_isCountdownPaused) {
+      _countdownController.stop();
+    } else {
+      _restartCountdown(snackbar.duration);
+    }
+  }
 
   void _restartCountdown(Duration duration) {
     if (_transitionCompleter.isCompleted) return;
-    _countdownController.duration = duration;
-    _countdownController.reverse(from: 1.0);
+    final countdown = _countdownController;
+    countdown.duration = duration;
+    if (countdown.isCompleted) {
+      if (!_isCountdownPaused) countdown.reverse();
+      return;
+    }
+    final refillDuration = _kCountdownRefillDuration * (1.0 - countdown.value);
+    countdown.animateTo(1.0, duration: refillDuration, curve: Curves.easeInOut);
   }
 
   void restartDuration() => _restartCountdown(snackbar.duration);
 
-  void addDuration(Duration extraDuration) {
-    final totalDuration = _countdownController.duration!;
-    final remainingDuration = totalDuration * _countdownController.value;
-    _restartCountdown(remainingDuration + extraDuration);
-  }
-
   void _handleCountdownStatusChanged(AnimationStatus status) {
-    if (status == AnimationStatus.dismissed) close();
+    switch (status) {
+      case AnimationStatus.completed:
+        if (!_isCountdownPaused) _countdownController.reverse();
+      case AnimationStatus.dismissed:
+        close();
+      case AnimationStatus.forward || AnimationStatus.reverse:
+        break;
+    }
   }
 
   Animation<Alignment> _createAnimation(bool top) {
@@ -114,6 +166,7 @@ class SnackbarController {
   AnimationController _createCountdownController() {
     final countdownController = AnimationController(
       value: 1.0,
+      animationBehavior: AnimationBehavior.preserve,
       debugLabel: '$runtimeType.countdown',
       vsync: _overlayState,
     );
@@ -152,11 +205,16 @@ class SnackbarController {
         child: AlignTransition(
           alignment: animation,
           child: Builder(
-            builder: (_) => Listener(
-              onPointerDown: (_) => _pauseCountdown(),
-              onPointerUp: (_) => _restartCountdown(snackbar.duration),
-              onPointerCancel: (_) => _restartCountdown(snackbar.duration),
-              child: snackWithHint,
+            builder: (_) => MouseRegion(
+              hitTestBehavior: HitTestBehavior.deferToChild,
+              onEnter: (_) => _onHoverChanged(true),
+              onExit: (_) => _onHoverChanged(false),
+              child: Listener(
+                onPointerDown: (_) => _onPressChanged(true),
+                onPointerUp: (_) => _onPressChanged(false),
+                onPointerCancel: (_) => _onPressChanged(false),
+                child: snackWithHint,
+              ),
             ),
           ),
         ),
@@ -232,7 +290,9 @@ class SnackbarController {
     if (_transitionCompleter.isCompleted) return;
     _transitionCompleter.complete();
     SnackbarManager.remove(close);
-    _pauseCountdown();
+    _lifecycleListener?.dispose();
+    _lifecycleListener = null;
+    _countdownController.stop();
 
     if (withAnimations) {
       if (dismissedBySwipe) {
